@@ -1,16 +1,7 @@
-"""test_operators.py — Unit tests for the arithmetic operator functions.
-
-Each test case targets one function from operators.py and asserts its
-expected behaviour.  Three of these tests are designed to **fail** against
-the original (buggy) code, confirming the bugs reported in the GitHub
-issues.
-"""
-
 import unittest
 import sys
 import os
 
-# Ensure the project root is on the Python path so we can import operators
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from operators import add, subtract, multiply, divide
