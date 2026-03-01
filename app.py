@@ -1,17 +1,21 @@
-"""app.py — Main Flask application for the web calculator.
+"""app.py: Application principale Flask pour la calculatrice web.
 
-This module defines the Flask web server, the expression parsing logic,
-and the single route that serves the calculator UI and handles form
-submissions.
+Ce module définit :
+- le serveur web Flask,
+- la logique de parsing et d’évaluation des expressions,
+- la route unique qui affiche l’interface et traite les soumissions du formulaire.
 """
 
 from flask import Flask, request, render_template
 from operators import add, subtract, multiply, divide
 
-# Create the Flask application instance
+# Création de l’instance principale de l’application Flask.
+# Cette instance sera utilisée pour enregistrer les routes et démarrer le serveur.
 app = Flask(__name__)
 
-# Map operator characters to their corresponding arithmetic functions
+# Dictionnaire associant chaque symbole d’opérateur
+# à la fonction correspondante.
+# Permet d’éviter une succession de if/elif et rend le code plus extensible.
 OPS = {
     '+': add,
     '-': subtract,
@@ -21,78 +25,93 @@ OPS = {
 
 
 def calculate(expr: str):
-    """Parse and evaluate a simple arithmetic expression.
+    """Analyse et évalue une expression arithmétique simple.
 
-    The expression must contain exactly two numeric operands separated by
-    a single operator (+, -, *, /).  Spaces are stripped before parsing.
+    L'expression doit contenir exactement deux opérandes numériques
+    séparés par un seul opérateur parmi (+, -, *, /).
+    Les espaces sont supprimés avant l’analyse.
 
     Args:
-        expr: A string such as ``"3+5"`` or ``"12 / 4"``.
+        expr (str) : Chaîne représentant une expression,
+                     par exemple "3+5" ou "12 / 4".
 
     Returns:
-        The numeric result of the operation (float).
+        float : Résultat numérique de l’opération.
 
     Raises:
-        ValueError: If the expression is empty, contains more than one
-            operator, has an operator at an invalid position, or has
-            non-numeric operands.
+        ValueError : Si l’expression est vide, contient plusieurs opérateurs,
+                     si l’opérateur est mal positionné ou si les opérandes
+                     ne sont pas numériques.
     """
     if not expr or not isinstance(expr, str):
-        raise ValueError("empty expression")
+        raise ValueError("expression vide")
 
-    # Remove all spaces so that "3 + 5" becomes "3+5"
+    # Suppression des espaces pour simplifier l’analyse
+    # (évite de gérer les cas "3 + 5" séparément).
     s = expr.replace(" ", "")
 
     op_pos = -1
     op_char = None
 
-    # Walk through the string to locate the operator
+    # Parcours caractère par caractère pour détecter l’unique opérateur.
+    # On impose un seul opérateur pour garder une logique simple.
     for i, ch in enumerate(s):
         if ch in OPS:
             if op_pos != -1:
-                raise ValueError("only one operator is allowed")
+                raise ValueError("un seul opérateur est autorisé")
             op_pos = i
             op_char = ch
 
-    # Operator must not be the first or last character
+    # L’opérateur ne peut pas être au début ni à la fin
+    # sinon il manquerait un opérande.
     if op_pos <= 0 or op_pos >= len(s) - 1:
-        raise ValueError("invalid expression format")
+        raise ValueError("format d'expression invalide")
 
-    # Split expression into left and right operands
+    # Découpage de la chaîne en deux parties : gauche et droite
     left = s[:op_pos]
-    right = s[op_pos+1:]
+    right = s[op_pos + 1:]
 
-    # Convert operand strings to floats
+    # Conversion en float pour autoriser les nombres décimaux.
     try:
         a = float(left)
         b = float(right)
     except ValueError:
-        raise ValueError("operands must be numbers")
+        raise ValueError("les opérandes doivent être numériques")
 
-    # Dispatch the operation using the OPS mapping
+    # Appel dynamique de la fonction correspondant à l’opérateur.
+    # Ce mécanisme rend l’ajout d’un nouvel opérateur très simple.
     return OPS[op_char](a, b)
 
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    """Serve the calculator page and process form submissions.
+    """Affiche la page de la calculatrice et traite les soumissions.
 
-    On GET, renders the calculator with an empty display.
-    On POST, evaluates the expression sent from the form and
-    renders the result (or an error message) on the display.
+    - En GET : affiche la calculatrice avec un affichage vide.
+    - En POST : récupère l’expression envoyée par le formulaire,
+      l’évalue et affiche le résultat ou un message d’erreur.
 
     Returns:
-        Rendered HTML of the calculator page.
+        str : Code HTML généré pour la page.
     """
     result = ""
+
+    # On distingue GET et POST pour séparer affichage initial
+    # et traitement des données envoyées par l’utilisateur.
     if request.method == 'POST':
         expression = request.form.get('display', '')
+
         try:
             result = calculate(expression)
         except Exception as e:
-            result = f"Error: {e}"
+            # Capture générique pour éviter que l’application
+            # ne plante et afficher un message clair à l’utilisateur.
+            result = f"Erreur : {e}"
+
     return render_template('index.html', result=result)
 
 
 if __name__ == '__main__':
+    # Mode debug activé pour faciliter le développement
+    # (rechargement automatique et affichage détaillé des erreurs).
     app.run(debug=True)
