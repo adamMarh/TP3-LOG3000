@@ -1,30 +1,31 @@
 # tests/
 
-## Purpose
-This directory contains the **automated test suite** for the Flask Calculator project. Tests are written with Python's built-in `unittest` framework and can also be executed via `pytest`.
+## Objectif
+Ce répertoire contient la suite de **tests automatisés** du projet Flask Calculator.
+Les tests sont écrits avec le framework intégré `unittest` de Python et peuvent également être exécutés avec `pytest`.
 
-## Files
-| File | Description |
+## Fichiers
+| Fichier | Description |
 |------|-------------|
-| `test_operators.py` | Unit tests for every function in `operators.py` (add, subtract, multiply, divide). These tests expose the three known bugs. |
-| `test_app.py` | Integration tests for the Flask application: verifies the `calculate()` function and the HTTP route. |
+| `test_operators.py` | Tests unitaires pour chaque fonction de `operators.py` (add, subtract, multiply, divide). Ces tests mettent en évidence les trois bugs connus. |
+| `test_app.py` | Tests d’intégration pour l’application Flask : vérifie la fonction `calculate()` ainsi que la route HTTP. |
 
-## How to Run
+## Comment exécuter les tests
 
 ```bash
-# From the project root directory
+# Depuis le répertoire racine du projet
 python -m pytest tests/ -v
 ```
 
-Or with unittest:
+Ou avec unittest unittest:
 ```bash
 python -m unittest discover -s tests -v
 ```
 
-## What the Tests Cover
-- **Addition**: verifies `add(a, b)` returns the correct sum.
-- **Subtraction**: verifies `subtract(a, b)` returns `a - b` (currently fails due to operand swap bug).
-- **Multiplication**: verifies `multiply(a, b)` returns `a * b` (currently fails because `**` is used instead of `*`).
-- **Division**: verifies `divide(a, b)` returns true division `a / b` (currently fails because `//` floor division is used).
-- **Expression parsing**: verifies `calculate()` correctly parses and evaluates simple expressions.
-- **Edge cases**: empty input, invalid operators, division by zero, non-numeric operands.
+## Ce que couvrent les tests
+- **Addition**: vérifie que `add(a, b)` retourne la somme correcte.
+- **Soustraction**: vérifie que `subtract(a, b)` retourne `a - b` (échoue actuellement à cause d’un bug d’inversion des opérandes).
+- **Multiplication**: vérifie que `multiply(a, b)` retourne `a * b` (échoue actuellement car `**` est utilisé à la place de `*`).
+- **Division**: vérifie que `divide(a, b)` retourne true division `a / b` (échoue actuellement car l’opérateur `//` de division entière est utilisé).
+- **Analyse d'expressions**: vérifie que `calculate()` analyse et évalue correctement des expressions simples.
+- **Cas limites** : entrée vide, opérateurs invalides, division par zéro, opérandes non numériques.

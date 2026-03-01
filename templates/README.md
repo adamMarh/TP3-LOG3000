@@ -1,17 +1,18 @@
 # templates/
 
-## Purpose
-This directory holds the **Jinja2 HTML templates** rendered by the Flask backend.
+## Objectif
+Ce répertoire contient les templates **HTML Jinja2** rendus par le backend Flask.
 
-## Files
-| File | Description |
-|------|-------------|
-| `index.html` | Main (and only) page of the calculator. Contains the display input, number buttons (0–9), operator buttons (+, −, ×, ÷), a clear button (C) and a submit button (=). JavaScript in a `<script>` block handles appending characters to the display and clearing it. |
+## Fichier
+| Fichier | Description |
+|---------|-------------|
+| `index.html` | Page principale (et unique) de la calculatrice. Contient le champ d’affichage, les boutons numériques (0–9), les boutons opérateurs (+, −, ×, ÷), un bouton de réinitialisation (C) et un bouton de validation (=). Un script JavaScript dans une balise <script> gère l’ajout des caractères dans l’affichage ainsi que sa réinitialisation. |
 
-## Dependencies
-- Flask's `render_template` function (called from `app.py`).
-- The CSS file at `static/style.css` (linked via `url_for`).
+## Dépendances
+- La fonction `render_template` de Flask (appelée depuis `app.py`).
+- Le fichier CSS situé dans `static/style.css` (lié via `url_for`).
 
-## Notes
-- The form uses `method="POST"` so pressing **=** submits the current display value to the server, which evaluates the expression and returns the result.
-- The `display` input is marked `readonly`; user interaction is handled through `onclick` handlers on the buttons.
+## Remarques
+- Le formulaire utilise `method="POST"` : lorsque l’on appuie sur =, la valeur affichée est envoyée au serveur, qui évalue l’expression et renvoie le résultat.
+
+- Le champ `display` est défini comme `readonly` ; l’interaction utilisateur est gérée via des gestionnaires `onclick` sur les boutons.
